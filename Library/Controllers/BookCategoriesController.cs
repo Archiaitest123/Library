@@ -32,5 +32,31 @@ public class BookCategoriesController : ControllerBase
         return Ok(category);
     }
 
-    
+    [HttpPost]
+    public async Task<ActionResult<BookCategoryDto>> Create([FromBody] CreateBookCategoryDto createDto)
+    {
+        var category = await _categoryService.CreateAsync(createDto);
+        return CreatedAtAction(nameof(GetById), new { id = category.Id }, category);
+    }
+
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateBookCategoryDto updateDto)
+    {
+        try
+        {
+            await _categoryService.UpdateAsync(id, updateDto);
+            return NoContent();
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        await _categoryService.DeleteAsync(id);
+        return NoContent();
+    }
 }

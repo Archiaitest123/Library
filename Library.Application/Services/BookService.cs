@@ -1,6 +1,8 @@
 using Library.Application.DTOs;
+using Library.Application.Email;
 using Library.Application.Interfaces;
 using Library.Application.Mappings;
+using Library.Domain.Entities;
 using Library.Domain.Interfaces;
 
 namespace Library.Application.Services;
@@ -8,10 +10,14 @@ namespace Library.Application.Services;
 public class BookService : IBookService
 {
     private readonly IBookRepository _bookRepository;
+    private readonly IEmailService _emailService;
+    private readonly EmailSettings _emailSettings;
 
-    public BookService(IBookRepository bookRepository)
+    public BookService(IBookRepository bookRepository, IEmailService emailService, EmailSettings emailSettings)
     {
         _bookRepository = bookRepository;
+        _emailService = emailService;
+        _emailSettings = emailSettings;
     }
 
     public async Task<BookDto?> GetByIdAsync(Guid id)
@@ -36,6 +42,7 @@ public class BookService : IBookService
     {
         var book = createBookDto.ToEntity();
         await _bookRepository.AddAsync(book);
+        await SendBookAddedNotificationAsync(book);
         return book.ToDto();
     }
 
@@ -51,5 +58,17 @@ public class BookService : IBookService
     public async Task DeleteAsync(Guid id)
     {
         await _bookRepository.DeleteAsync(id);
+    }
+
+    private Task SendBookAddedNotificationAsync(Book book)
+    {
+        if (string.IsNullOrWhiteSpace(_emailSettings.NotificationTo))
+        {
+            return Task.CompletedTask;
+        }
+
+        var subject = $"New book added: {book.Title}";
+        var body = $"<p>A new book was added.</p><ul><li>Title: {book.Title}</li><li>Author: {book.Author}</li><li>ISBN: {book.ISBN}</li><li>Published Year: {book.PublishedYear}</li></ul>";
+        return _emailService.SendAsync(_emailSettings.NotificationTo, subject, body, true);
     }
 }

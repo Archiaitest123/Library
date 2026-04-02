@@ -10,8 +10,8 @@ public class BookLoan : BaseEntity
     public Guid CustomerId { get; set; }
     public Customer Customer { get; set; } = null!;
 
-    public Guid? ProcessedByStaffId { get; set; }
-    public Staff? ProcessedByStaff { get; set; }
+    public Guid? ProcessedByUserId { get; set; }
+    public User? ProcessedByUser { get; set; }
 
     public DateTime LoanDate { get; set; }
     public DateTime DueDate { get; set; }

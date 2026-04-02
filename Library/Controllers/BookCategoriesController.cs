@@ -1,5 +1,6 @@
 using Library.Application.DTOs;
 using Library.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Controllers;
@@ -7,6 +8,7 @@ namespace Library.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
+[Authorize(Policy = "LibrarianOrAdmin")]
 public class BookCategoriesController : ControllerBase
 {
     private readonly IBookCategoryService _categoryService;
@@ -17,6 +19,7 @@ public class BookCategoriesController : ControllerBase
     }
 
     [HttpGet]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(IEnumerable<BookCategoryDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<BookCategoryDto>>> GetAll()
     {
@@ -25,6 +28,7 @@ public class BookCategoriesController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(BookCategoryDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<BookCategoryDto>> GetById(Guid id)
@@ -37,6 +41,7 @@ public class BookCategoriesController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Policy = "LibrarianOrAdmin")]
     [ProducesResponseType(typeof(BookCategoryDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<BookCategoryDto>> Create([FromBody] CreateBookCategoryDto createDto)
@@ -46,6 +51,7 @@ public class BookCategoriesController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [Authorize(Policy = "LibrarianOrAdmin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateBookCategoryDto updateDto)
@@ -55,6 +61,7 @@ public class BookCategoriesController : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
+    [Authorize(Policy = "LibrarianOrAdmin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(Guid id)

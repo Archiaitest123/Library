@@ -14,10 +14,10 @@ public class LibraryBranchRepository : BaseRepository<LibraryBranch>, ILibraryBr
         return await _dbSet.Where(lb => lb.IsActive).ToListAsync();
     }
 
-    public async Task<LibraryBranch?> GetWithStaffAsync(Guid id)
+    public async Task<LibraryBranch?> GetWithUsersAsync(Guid id)
     {
         return await _dbSet
-            .Include(lb => lb.Staff)
+            .Include(lb => lb.Users)
             .FirstOrDefaultAsync(lb => lb.Id == id);
     }
 

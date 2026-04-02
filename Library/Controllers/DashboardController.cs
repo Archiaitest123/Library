@@ -1,5 +1,6 @@
 using Library.Application.DTOs;
 using Library.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Controllers;
@@ -7,6 +8,7 @@ namespace Library.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
+[Authorize(Policy = "LibrarianOrAdmin")]
 public class DashboardController : ControllerBase
 {
     private readonly IDashboardService _dashboardService;

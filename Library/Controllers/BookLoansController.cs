@@ -1,6 +1,7 @@
 using Library.Application.DTOs;
 using Library.Application.Interfaces;
 using Library.Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Controllers;
@@ -8,6 +9,7 @@ namespace Library.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
+[Authorize(Policy = "LibrarianOrAdmin")]
 public class BookLoansController : ControllerBase
 {
     private readonly IBookLoanService _loanService;

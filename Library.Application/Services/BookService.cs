@@ -1,3 +1,4 @@
+using Library.Application.Common.Exceptions;
 using Library.Application.DTOs;
 using Library.Application.Interfaces;
 using Library.Application.Mappings;
@@ -16,7 +17,7 @@ public class BookService : IBookService
 
     public async Task<BookDto?> GetByIdAsync(Guid id)
     {
-        var book = await _bookRepository.GetByIdAsync(id);
+        var book = await _bookRepository.GetWithDetailsAsync(id);
         return book?.ToDto();
     }
 
@@ -34,6 +35,10 @@ public class BookService : IBookService
 
     public async Task<BookDto> CreateAsync(CreateBookDto createBookDto)
     {
+        var existingBook = await _bookRepository.GetByISBNAsync(createBookDto.ISBN);
+        if (existingBook is not null)
+            throw new ConflictException($"A book with ISBN '{createBookDto.ISBN}' already exists.");
+
         var book = createBookDto.ToEntity();
         await _bookRepository.AddAsync(book);
         return book.ToDto();
@@ -42,7 +47,7 @@ public class BookService : IBookService
     public async Task UpdateAsync(Guid id, UpdateBookDto updateBookDto)
     {
         var book = await _bookRepository.GetByIdAsync(id)
-            ?? throw new KeyNotFoundException($"Book with id {id} not found.");
+            ?? throw new NotFoundException(nameof(Domain.Entities.Book), id);
 
         updateBookDto.UpdateEntity(book);
         await _bookRepository.UpdateAsync(book);
@@ -50,6 +55,9 @@ public class BookService : IBookService
 
     public async Task DeleteAsync(Guid id)
     {
+        if (!await _bookRepository.ExistsAsync(id))
+            throw new NotFoundException(nameof(Domain.Entities.Book), id);
+
         await _bookRepository.DeleteAsync(id);
     }
 }

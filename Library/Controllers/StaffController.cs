@@ -6,6 +6,7 @@ namespace Library.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Produces("application/json")]
 public class StaffController : ControllerBase
 {
     private readonly IStaffService _staffService;
@@ -16,6 +17,7 @@ public class StaffController : ControllerBase
     }
 
     [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<StaffDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<StaffDto>>> GetAll()
     {
         var staffList = await _staffService.GetAllAsync();
@@ -23,6 +25,8 @@ public class StaffController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
+    [ProducesResponseType(typeof(StaffDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<StaffDto>> GetById(Guid id)
     {
         var staff = await _staffService.GetByIdAsync(id);
@@ -33,6 +37,7 @@ public class StaffController : ControllerBase
     }
 
     [HttpGet("active")]
+    [ProducesResponseType(typeof(IEnumerable<StaffDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<StaffDto>>> GetActive()
     {
         var staffList = await _staffService.GetActiveStaffAsync();
@@ -40,6 +45,8 @@ public class StaffController : ControllerBase
     }
 
     [HttpPost]
+    [ProducesResponseType(typeof(StaffDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<StaffDto>> Create([FromBody] CreateStaffDto createDto)
     {
         var staff = await _staffService.CreateAsync(createDto);
@@ -47,20 +54,17 @@ public class StaffController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateStaffDto updateDto)
     {
-        try
-        {
-            await _staffService.UpdateAsync(id, updateDto);
-            return NoContent();
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound();
-        }
+        await _staffService.UpdateAsync(id, updateDto);
+        return NoContent();
     }
 
     [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(Guid id)
     {
         await _staffService.DeleteAsync(id);

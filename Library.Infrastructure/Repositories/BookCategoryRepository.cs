@@ -5,57 +5,39 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Library.Infrastructure.Repositories;
 
-public class BookCategoryRepository : IBookCategoryRepository
+public class BookCategoryRepository : BaseRepository<BookCategory>, IBookCategoryRepository
 {
-    private readonly LibraryDbContext _context;
-
-    public BookCategoryRepository(LibraryDbContext context)
-    {
-        _context = context;
-    }
-
-    public async Task<BookCategory?> GetByIdAsync(Guid id)
-    {
-        return await _context.BookCategories.FindAsync(id);
-    }
-
-    public async Task<IEnumerable<BookCategory>> GetAllAsync()
-    {
-        return await _context.BookCategories.ToListAsync();
-    }
+    public BookCategoryRepository(LibraryDbContext context) : base(context) { }
 
     public async Task<BookCategory?> GetByNameAsync(string name)
     {
-        return await _context.BookCategories
-            .FirstOrDefaultAsync(c => c.Name == name);
+        return await _dbSet.FirstOrDefaultAsync(c => c.Name == name);
     }
 
     public async Task<BookCategory?> GetWithBooksAsync(Guid id)
     {
-        return await _context.BookCategories
+        return await _dbSet
             .Include(c => c.Books)
             .FirstOrDefaultAsync(c => c.Id == id);
     }
 
-    public async Task AddAsync(BookCategory entity)
+    public async Task<IEnumerable<BookCategory>> GetActiveCategoriesAsync()
     {
-        await _context.BookCategories.AddAsync(entity);
-        await _context.SaveChangesAsync();
+        return await _dbSet.Where(c => c.IsActive).ToListAsync();
     }
 
-    public async Task UpdateAsync(BookCategory entity)
+    public async Task<IEnumerable<BookCategory>> GetRootCategoriesAsync()
     {
-        _context.BookCategories.Update(entity);
-        await _context.SaveChangesAsync();
+        return await _dbSet
+            .Where(c => c.ParentCategoryId == null)
+            .Include(c => c.SubCategories)
+            .ToListAsync();
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task<IEnumerable<BookCategory>> GetSubCategoriesAsync(Guid parentId)
     {
-        var category = await _context.BookCategories.FindAsync(id);
-        if (category is not null)
-        {
-            _context.BookCategories.Remove(category);
-            await _context.SaveChangesAsync();
-        }
+        return await _dbSet
+            .Where(c => c.ParentCategoryId == parentId)
+            .ToListAsync();
     }
 }

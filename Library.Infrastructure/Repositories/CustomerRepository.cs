@@ -5,63 +5,48 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Library.Infrastructure.Repositories;
 
-public class CustomerRepository : ICustomerRepository
+public class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
 {
-    private readonly LibraryDbContext _context;
-
-    public CustomerRepository(LibraryDbContext context)
-    {
-        _context = context;
-    }
-
-    public async Task<Customer?> GetByIdAsync(Guid id)
-    {
-        return await _context.Customers.FindAsync(id);
-    }
-
-    public async Task<IEnumerable<Customer>> GetAllAsync()
-    {
-        return await _context.Customers.ToListAsync();
-    }
+    public CustomerRepository(LibraryDbContext context) : base(context) { }
 
     public async Task<Customer?> GetByEmailAsync(string email)
     {
-        return await _context.Customers
-            .FirstOrDefaultAsync(c => c.Email == email);
+        return await _dbSet.FirstOrDefaultAsync(c => c.Email == email);
     }
 
     public async Task<Customer?> GetByMembershipNumberAsync(string membershipNumber)
     {
-        return await _context.Customers
-            .FirstOrDefaultAsync(c => c.MembershipNumber == membershipNumber);
+        return await _dbSet.FirstOrDefaultAsync(c => c.MembershipNumber == membershipNumber);
     }
 
     public async Task<IEnumerable<Customer>> GetActiveCustomersAsync()
     {
-        return await _context.Customers
-            .Where(c => c.IsActive)
+        return await _dbSet.Where(c => c.IsActive).ToListAsync();
+    }
+
+    public async Task<Customer?> GetWithLoansAsync(Guid id)
+    {
+        return await _dbSet
+            .Include(c => c.BookLoans)
+                .ThenInclude(l => l.Book)
+            .FirstOrDefaultAsync(c => c.Id == id);
+    }
+
+    public async Task<Customer?> GetWithReservationsAsync(Guid id)
+    {
+        return await _dbSet
+            .Include(c => c.BookReservations)
+                .ThenInclude(r => r.Book)
+            .FirstOrDefaultAsync(c => c.Id == id);
+    }
+
+    public async Task<IEnumerable<Customer>> SearchAsync(string searchTerm)
+    {
+        return await _dbSet
+            .Where(c => c.FirstName.Contains(searchTerm)
+                || c.LastName.Contains(searchTerm)
+                || c.Email.Contains(searchTerm)
+                || c.MembershipNumber.Contains(searchTerm))
             .ToListAsync();
-    }
-
-    public async Task AddAsync(Customer entity)
-    {
-        await _context.Customers.AddAsync(entity);
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task UpdateAsync(Customer entity)
-    {
-        _context.Customers.Update(entity);
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task DeleteAsync(Guid id)
-    {
-        var customer = await _context.Customers.FindAsync(id);
-        if (customer is not null)
-        {
-            _context.Customers.Remove(customer);
-            await _context.SaveChangesAsync();
-        }
     }
 }

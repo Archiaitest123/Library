@@ -6,6 +6,7 @@ namespace Library.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Produces("application/json")]
 public class BooksController : ControllerBase
 {
     private readonly IBookService _bookService;
@@ -16,6 +17,7 @@ public class BooksController : ControllerBase
     }
 
     [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<BookDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<BookDto>>> GetAll()
     {
         var books = await _bookService.GetAllAsync();
@@ -23,6 +25,8 @@ public class BooksController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
+    [ProducesResponseType(typeof(BookDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<BookDto>> GetById(Guid id)
     {
         var book = await _bookService.GetByIdAsync(id);
@@ -33,6 +37,7 @@ public class BooksController : ControllerBase
     }
 
     [HttpGet("available")]
+    [ProducesResponseType(typeof(IEnumerable<BookDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<BookDto>>> GetAvailable()
     {
         var books = await _bookService.GetAvailableBooksAsync();
@@ -40,6 +45,9 @@ public class BooksController : ControllerBase
     }
 
     [HttpPost]
+    [ProducesResponseType(typeof(BookDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<BookDto>> Create([FromBody] CreateBookDto createBookDto)
     {
         var book = await _bookService.CreateAsync(createBookDto);
@@ -47,20 +55,17 @@ public class BooksController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateBookDto updateBookDto)
     {
-        try
-        {
-            await _bookService.UpdateAsync(id, updateBookDto);
-            return NoContent();
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound();
-        }
+        await _bookService.UpdateAsync(id, updateBookDto);
+        return NoContent();
     }
 
     [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(Guid id)
     {
         await _bookService.DeleteAsync(id);

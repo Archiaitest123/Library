@@ -15,8 +15,12 @@ public static class StaffMappings
             Email = staff.Email,
             Phone = staff.Phone,
             Position = staff.Position,
+            Role = staff.Role,
             HireDate = staff.HireDate,
-            IsActive = staff.IsActive
+            IsActive = staff.IsActive,
+            EmployeeNumber = staff.EmployeeNumber,
+            LibraryBranchId = staff.LibraryBranchId,
+            LibraryBranchName = staff.LibraryBranch?.Name
         };
     }
 
@@ -30,8 +34,13 @@ public static class StaffMappings
             Email = dto.Email,
             Phone = dto.Phone,
             Position = dto.Position,
+            Role = dto.Role,
+            Salary = dto.Salary,
             HireDate = dto.HireDate,
-            IsActive = true
+            LibraryBranchId = dto.LibraryBranchId,
+            EmployeeNumber = $"EMP-{Guid.NewGuid().ToString("N")[..6].ToUpper()}",
+            IsActive = true,
+            CreatedAt = DateTime.UtcNow
         };
     }
 
@@ -42,6 +51,10 @@ public static class StaffMappings
         staff.Email = dto.Email;
         staff.Phone = dto.Phone;
         staff.Position = dto.Position;
+        staff.Role = dto.Role;
+        staff.Salary = dto.Salary;
         staff.IsActive = dto.IsActive;
+        staff.LibraryBranchId = dto.LibraryBranchId;
+        staff.UpdatedAt = DateTime.UtcNow;
     }
 }

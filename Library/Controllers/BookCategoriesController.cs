@@ -6,6 +6,7 @@ namespace Library.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Produces("application/json")]
 public class BookCategoriesController : ControllerBase
 {
     private readonly IBookCategoryService _categoryService;
@@ -16,6 +17,7 @@ public class BookCategoriesController : ControllerBase
     }
 
     [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<BookCategoryDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<BookCategoryDto>>> GetAll()
     {
         var categories = await _categoryService.GetAllAsync();
@@ -23,6 +25,8 @@ public class BookCategoriesController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
+    [ProducesResponseType(typeof(BookCategoryDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<BookCategoryDto>> GetById(Guid id)
     {
         var category = await _categoryService.GetByIdAsync(id);
@@ -32,5 +36,30 @@ public class BookCategoriesController : ControllerBase
         return Ok(category);
     }
 
-    
+    [HttpPost]
+    [ProducesResponseType(typeof(BookCategoryDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<BookCategoryDto>> Create([FromBody] CreateBookCategoryDto createDto)
+    {
+        var category = await _categoryService.CreateAsync(createDto);
+        return CreatedAtAction(nameof(GetById), new { id = category.Id }, category);
+    }
+
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateBookCategoryDto updateDto)
+    {
+        await _categoryService.UpdateAsync(id, updateDto);
+        return NoContent();
+    }
+
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        await _categoryService.DeleteAsync(id);
+        return NoContent();
+    }
 }

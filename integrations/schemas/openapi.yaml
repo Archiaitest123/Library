@@ -1,0 +1,580 @@
+openapi: 3.0.3
+info:
+  title: Library Management System API
+  description: RESTful API for managing books, categories, customers, and staff in a library system.
+  version: 1.0.0
+  contact:
+    name: Library API Support
+
+servers:
+  - url: https://localhost:5001
+    description: Development
+  - url: https://library-api-test.example.com
+    description: Test
+  - url: https://library-api.example.com
+    description: Production
+
+paths:
+  /api/books:
+    get:
+      tags: [Books]
+      summary: Get all books
+      operationId: getBooks
+      responses:
+        "200":
+          description: A list of books
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BookDto"
+    post:
+      tags: [Books]
+      summary: Create a new book
+      operationId: createBook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBookDto"
+      responses:
+        "201":
+          description: Book created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookDto"
+
+  /api/books/{id}:
+    get:
+      tags: [Books]
+      summary: Get book by ID
+      operationId: getBookById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Book found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookDto"
+        "404":
+          description: Book not found
+    put:
+      tags: [Books]
+      summary: Update a book
+      operationId: updateBook
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateBookDto"
+      responses:
+        "204":
+          description: Book updated
+        "404":
+          description: Book not found
+    delete:
+      tags: [Books]
+      summary: Delete a book
+      operationId: deleteBook
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Book deleted
+
+  /api/books/available:
+    get:
+      tags: [Books]
+      summary: Get available books
+      operationId: getAvailableBooks
+      responses:
+        "200":
+          description: A list of available books
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BookDto"
+
+  /api/bookcategories:
+    get:
+      tags: [BookCategories]
+      summary: Get all book categories
+      operationId: getBookCategories
+      responses:
+        "200":
+          description: A list of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BookCategoryDto"
+
+  /api/bookcategories/{id}:
+    get:
+      tags: [BookCategories]
+      summary: Get category by ID
+      operationId: getBookCategoryById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Category found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookCategoryDto"
+        "404":
+          description: Category not found
+
+  /api/customers:
+    get:
+      tags: [Customers]
+      summary: Get all customers
+      operationId: getCustomers
+      responses:
+        "200":
+          description: A list of customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CustomerDto"
+    post:
+      tags: [Customers]
+      summary: Create a new customer
+      operationId: createCustomer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCustomerDto"
+      responses:
+        "201":
+          description: Customer created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerDto"
+
+  /api/customers/{id}:
+    get:
+      tags: [Customers]
+      summary: Get customer by ID
+      operationId: getCustomerById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Customer found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerDto"
+        "404":
+          description: Customer not found
+    put:
+      tags: [Customers]
+      summary: Update a customer
+      operationId: updateCustomer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCustomerDto"
+      responses:
+        "204":
+          description: Customer updated
+        "404":
+          description: Customer not found
+    delete:
+      tags: [Customers]
+      summary: Delete a customer
+      operationId: deleteCustomer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Customer deleted
+
+  /api/customers/active:
+    get:
+      tags: [Customers]
+      summary: Get active customers
+      operationId: getActiveCustomers
+      responses:
+        "200":
+          description: A list of active customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CustomerDto"
+
+  /api/staff:
+    get:
+      tags: [Staff]
+      summary: Get all staff
+      operationId: getStaff
+      responses:
+        "200":
+          description: A list of staff
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StaffDto"
+    post:
+      tags: [Staff]
+      summary: Create a new staff member
+      operationId: createStaff
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateStaffDto"
+      responses:
+        "201":
+          description: Staff created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StaffDto"
+
+  /api/staff/{id}:
+    get:
+      tags: [Staff]
+      summary: Get staff by ID
+      operationId: getStaffById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Staff found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StaffDto"
+        "404":
+          description: Staff not found
+    put:
+      tags: [Staff]
+      summary: Update a staff member
+      operationId: updateStaff
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateStaffDto"
+      responses:
+        "204":
+          description: Staff updated
+        "404":
+          description: Staff not found
+    delete:
+      tags: [Staff]
+      summary: Delete a staff member
+      operationId: deleteStaff
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Staff deleted
+
+  /api/staff/active:
+    get:
+      tags: [Staff]
+      summary: Get active staff
+      operationId: getActiveStaff
+      responses:
+        "200":
+          description: A list of active staff
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StaffDto"
+
+components:
+  schemas:
+    BookDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        author:
+          type: string
+        isbn:
+          type: string
+        publishedYear:
+          type: integer
+        isAvailable:
+          type: boolean
+        bookCategoryId:
+          type: string
+          format: uuid
+          nullable: true
+
+    CreateBookDto:
+      type: object
+      required: [title, author, isbn, publishedYear]
+      properties:
+        title:
+          type: string
+          maxLength: 200
+        author:
+          type: string
+          maxLength: 150
+        isbn:
+          type: string
+          maxLength: 20
+        publishedYear:
+          type: integer
+        isAvailable:
+          type: boolean
+          default: true
+        bookCategoryId:
+          type: string
+          format: uuid
+          nullable: true
+
+    UpdateBookDto:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 200
+        author:
+          type: string
+          maxLength: 150
+        isbn:
+          type: string
+          maxLength: 20
+        publishedYear:
+          type: integer
+        isAvailable:
+          type: boolean
+        bookCategoryId:
+          type: string
+          format: uuid
+          nullable: true
+
+    BookCategoryDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+
+    CustomerDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        address:
+          type: string
+        membershipNumber:
+          type: string
+        registeredDate:
+          type: string
+          format: date-time
+        isActive:
+          type: boolean
+
+    CreateCustomerDto:
+      type: object
+      required: [firstName, lastName, email, membershipNumber]
+      properties:
+        firstName:
+          type: string
+          maxLength: 100
+        lastName:
+          type: string
+          maxLength: 100
+        email:
+          type: string
+          maxLength: 200
+        phone:
+          type: string
+          maxLength: 20
+        address:
+          type: string
+          maxLength: 500
+        membershipNumber:
+          type: string
+          maxLength: 50
+
+    UpdateCustomerDto:
+      type: object
+      properties:
+        firstName:
+          type: string
+          maxLength: 100
+        lastName:
+          type: string
+          maxLength: 100
+        email:
+          type: string
+          maxLength: 200
+        phone:
+          type: string
+          maxLength: 20
+        address:
+          type: string
+          maxLength: 500
+        membershipNumber:
+          type: string
+          maxLength: 50
+        isActive:
+          type: boolean
+
+    StaffDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        position:
+          type: string
+        hireDate:
+          type: string
+          format: date-time
+        isActive:
+          type: boolean
+
+    CreateStaffDto:
+      type: object
+      required: [firstName, lastName, email, position]
+      properties:
+        firstName:
+          type: string
+          maxLength: 100
+        lastName:
+          type: string
+          maxLength: 100
+        email:
+          type: string
+          maxLength: 200
+        phone:
+          type: string
+          maxLength: 20
+        position:
+          type: string
+          maxLength: 100
+
+    UpdateStaffDto:
+      type: object
+      properties:
+        firstName:
+          type: string
+          maxLength: 100
+        lastName:
+          type: string
+          maxLength: 100
+        email:
+          type: string
+          maxLength: 200
+        phone:
+          type: string
+          maxLength: 20
+        position:
+          type: string
+          maxLength: 100
+        isActive:
+          type: boolean

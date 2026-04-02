@@ -1,0 +1,61 @@
+### Customer Integration - HTTP Samples
+
+### Get All Customers
+GET https://localhost:5001/api/customers
+Accept: application/json
+
+###
+
+### Get Active Customers
+GET https://localhost:5001/api/customers/active
+Accept: application/json
+
+###
+
+### Get Customer by ID
+GET https://localhost:5001/api/customers/{{customerId}}
+Accept: application/json
+
+###
+
+### Register a Customer
+POST https://localhost:5001/api/customers
+Content-Type: application/json
+
+{
+  "firstName": "Ayse",
+  "lastName": "Kara",
+  "email": "ayse.kara@example.com",
+  "phone": "+905551112233",
+  "address": "Izmir, Turkey",
+  "membershipNumber": "MBR-2024-200"
+}
+
+###
+
+### Update Customer
+PUT https://localhost:5001/api/customers/{{customerId}}
+Content-Type: application/json
+
+{
+  "firstName": "Ayse",
+  "lastName": "Kara",
+  "email": "ayse.kara.new@example.com",
+  "phone": "+905551112233",
+  "address": "Izmir, Turkey",
+  "membershipNumber": "MBR-2024-200",
+  "isActive": true
+}
+
+###
+
+### Delete Customer
+DELETE https://localhost:5001/api/customers/{{customerId}}
+
+###
+
+### Browse Available Books
+GET https://localhost:5001/api/books/available
+Accept: application/json
+
+###

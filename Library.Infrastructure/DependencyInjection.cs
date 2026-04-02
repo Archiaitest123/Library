@@ -1,5 +1,8 @@
+using Library.Application.Email;
+using Library.Application.Interfaces;
 using Library.Domain.Interfaces;
 using Library.Infrastructure.Data;
+using Library.Infrastructure.Email;
 using Library.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

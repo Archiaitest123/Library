@@ -15,9 +15,13 @@ public static class CustomerMappings
             Email = customer.Email,
             Phone = customer.Phone,
             Address = customer.Address,
+            City = customer.City,
             MembershipNumber = customer.MembershipNumber,
+            MembershipType = customer.MembershipType,
             RegisteredDate = customer.RegisteredDate,
-            IsActive = customer.IsActive
+            MembershipExpiryDate = customer.MembershipExpiryDate,
+            IsActive = customer.IsActive,
+            MaxBooksAllowed = customer.MaxBooksAllowed
         };
     }
 
@@ -31,9 +35,23 @@ public static class CustomerMappings
             Email = dto.Email,
             Phone = dto.Phone,
             Address = dto.Address,
-            MembershipNumber = Guid.NewGuid().ToString("N")[..10].ToUpper(),
+            City = dto.City,
+            PostalCode = dto.PostalCode,
+            MembershipType = dto.MembershipType,
+            DateOfBirth = dto.DateOfBirth,
+            MembershipNumber = $"LIB-{Guid.NewGuid().ToString("N")[..8].ToUpper()}",
             RegisteredDate = DateTime.UtcNow,
-            IsActive = true
+            MembershipExpiryDate = DateTime.UtcNow.AddYears(1),
+            IsActive = true,
+            MaxBooksAllowed = dto.MembershipType switch
+            {
+                Domain.Enums.MembershipType.Premium => 10,
+                Domain.Enums.MembershipType.Standard => 7,
+                Domain.Enums.MembershipType.Student => 5,
+                Domain.Enums.MembershipType.Senior => 7,
+                _ => 5
+            },
+            CreatedAt = DateTime.UtcNow
         };
     }
 
@@ -44,6 +62,10 @@ public static class CustomerMappings
         customer.Email = dto.Email;
         customer.Phone = dto.Phone;
         customer.Address = dto.Address;
+        customer.City = dto.City;
+        customer.PostalCode = dto.PostalCode;
+        customer.MembershipType = dto.MembershipType;
         customer.IsActive = dto.IsActive;
+        customer.UpdatedAt = DateTime.UtcNow;
     }
 }

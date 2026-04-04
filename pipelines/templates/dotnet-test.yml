@@ -1,0 +1,26 @@
+parameters:
+  - name: dotnetVersion
+    type: string
+    default: "8.0.x"
+  - name: buildConfiguration
+    type: string
+    default: "Release"
+
+steps:
+  - task: UseDotNet@2
+    displayName: "Install .NET SDK ${{ parameters.dotnetVersion }}"
+    inputs:
+      packageType: "sdk"
+      version: "${{ parameters.dotnetVersion }}"
+
+  - task: DotNetCoreCLI@2
+    displayName: "Run Tests"
+    inputs:
+      command: "test"
+      arguments: "--configuration ${{ parameters.buildConfiguration }} --no-build --collect:\"XPlat Code Coverage\""
+
+  - task: PublishCodeCoverageResults@1
+    displayName: "Publish Code Coverage"
+    inputs:
+      codeCoverageTool: "Cobertura"
+      summaryFileLocation: "$(Agent.TempDirectory)/**/coverage.cobertura.xml"

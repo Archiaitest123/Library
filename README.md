@@ -1,0 +1,120 @@
+# Library Management System
+
+A modern Library Management System built with **ASP.NET Core 8** following **Clean Architecture** principles.
+
+## ??? Architecture
+
+The solution follows a layered Clean Architecture approach:
+
+```
+Library.sln
+??? Library/                    # ASP.NET Core Web API (Presentation)
+??? Library.Application/        # Application Layer (Services, DTOs, Interfaces)
+??? Library.Domain/             # Domain Layer (Entities, Repository Interfaces)
+??? Library.Infrastructure/     # Infrastructure Layer (EF Core, Repositories, Email)
+```
+
+## ?? Projects
+
+| Project | Description |
+|---|---|
+| `Library` | ASP.NET Core Web API — Controllers, Swagger, Middleware |
+| `Library.Application` | Application logic — Services, DTOs, Mappings, Validators |
+| `Library.Domain` | Domain models — Entities, Enums, Value Objects, Repository interfaces |
+| `Library.Infrastructure` | Data access — EF Core DbContext, Repositories, Email service |
+
+## ?? Getting Started
+
+### Prerequisites
+
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+- [SQL Server](https://www.microsoft.com/en-us/sql-server) (LocalDB or full instance)
+
+### Setup
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Archiaitest123/Library.git
+   cd Library
+   ```
+
+2. **Configure the database connection**
+   Update `appsettings.json` in the `Library` project:
+   ```json
+   {
+     "ConnectionStrings": {
+       "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=LibraryDb;Trusted_Connection=True;"
+     }
+   }
+   ```
+
+3. **Apply migrations**
+   ```bash
+   cd Library
+   dotnet ef database update --project ../Library.Infrastructure
+   ```
+
+4. **Run the application**
+   ```bash
+   dotnet run --project Library
+   ```
+
+5. **Open Swagger UI**
+   Navigate to `https://localhost:5001/swagger` in your browser.
+
+## ?? API Endpoints
+
+### Books
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/books` | Get all books |
+| GET | `/api/books/{id}` | Get book by ID |
+| GET | `/api/books/available` | Get available books |
+| POST | `/api/books` | Create a new book |
+| PUT | `/api/books/{id}` | Update a book |
+| DELETE | `/api/books/{id}` | Delete a book |
+
+### Book Categories
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/bookcategories` | Get all categories |
+| GET | `/api/bookcategories/{id}` | Get category by ID |
+
+### Customers
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/customers` | Get all customers |
+| GET | `/api/customers/{id}` | Get customer by ID |
+| GET | `/api/customers/active` | Get active customers |
+| POST | `/api/customers` | Create a new customer |
+| PUT | `/api/customers/{id}` | Update a customer |
+| DELETE | `/api/customers/{id}` | Delete a customer |
+
+### Staff
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/staff` | Get all staff |
+| GET | `/api/staff/{id}` | Get staff by ID |
+| GET | `/api/staff/active` | Get active staff |
+| POST | `/api/staff` | Create a new staff |
+| PUT | `/api/staff/{id}` | Update a staff |
+| DELETE | `/api/staff/{id}` | Delete a staff |
+
+## ?? Testing
+
+```bash
+dotnet test
+```
+
+## ??? Technologies
+
+- **Runtime:** .NET 8
+- **Web Framework:** ASP.NET Core 8
+- **ORM:** Entity Framework Core 8
+- **Database:** SQL Server
+- **API Documentation:** Swagger / Swashbuckle
+- **Architecture:** Clean Architecture
+
+## ?? License
+
+This project is licensed under the MIT License.

@@ -1,0 +1,211 @@
+{
+  "info": {
+    "name": "Library API",
+    "description": "Library Management System API collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Books",
+      "item": [
+        {
+          "name": "Get All Books",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/books"
+          }
+        },
+        {
+          "name": "Get Book by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/books/{{bookId}}"
+          }
+        },
+        {
+          "name": "Get Available Books",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/books/available"
+          }
+        },
+        {
+          "name": "Create Book",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/books",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Clean Architecture\",\n  \"author\": \"Robert C. Martin\",\n  \"isbn\": \"978-0134494166\",\n  \"publishedYear\": 2017,\n  \"isAvailable\": true,\n  \"bookCategoryId\": null\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Book",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/books/{{bookId}}",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Clean Architecture (Updated)\",\n  \"author\": \"Robert C. Martin\",\n  \"isbn\": \"978-0134494166\",\n  \"publishedYear\": 2017,\n  \"isAvailable\": false,\n  \"bookCategoryId\": null\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Book",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/books/{{bookId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Book Categories",
+      "item": [
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/bookcategories"
+          }
+        },
+        {
+          "name": "Get Category by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/bookcategories/{{categoryId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customers",
+      "item": [
+        {
+          "name": "Get All Customers",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/customers"
+          }
+        },
+        {
+          "name": "Get Customer by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/customers/{{customerId}}"
+          }
+        },
+        {
+          "name": "Get Active Customers",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/customers/active"
+          }
+        },
+        {
+          "name": "Create Customer",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/customers",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Ali\",\n  \"lastName\": \"Yilmaz\",\n  \"email\": \"ali.yilmaz@example.com\",\n  \"phone\": \"+905551234567\",\n  \"address\": \"Istanbul, Turkey\",\n  \"membershipNumber\": \"MBR-2024-001\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Customer",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/customers/{{customerId}}",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Ali\",\n  \"lastName\": \"Yilmaz\",\n  \"email\": \"ali.yilmaz@example.com\",\n  \"phone\": \"+905551234567\",\n  \"address\": \"Istanbul, Turkey\",\n  \"membershipNumber\": \"MBR-2024-001\",\n  \"isActive\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Customer",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/customers/{{customerId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Staff",
+      "item": [
+        {
+          "name": "Get All Staff",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/staff"
+          }
+        },
+        {
+          "name": "Get Staff by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/staff/{{staffId}}"
+          }
+        },
+        {
+          "name": "Get Active Staff",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/staff/active"
+          }
+        },
+        {
+          "name": "Create Staff",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/staff",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Ahmet\",\n  \"lastName\": \"Yilmaz\",\n  \"email\": \"ahmet.yilmaz@library.local\",\n  \"phone\": \"+905551001001\",\n  \"position\": \"Librarian\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Staff",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/staff/{{staffId}}",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Ahmet\",\n  \"lastName\": \"Yilmaz\",\n  \"email\": \"ahmet.yilmaz@library.local\",\n  \"phone\": \"+905551001001\",\n  \"position\": \"Head Librarian\",\n  \"isActive\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Staff",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/staff/{{staffId}}"
+          }
+        }
+      ]
+    }
+  ]
+}

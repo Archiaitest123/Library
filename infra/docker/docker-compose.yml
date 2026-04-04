@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  library-api:
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile.api
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=LibraryDb;User Id=sa;Password=YourStr0ngP@ssword;TrustServerCertificate=True;
+      - Email__Host=mailhog
+      - Email__Port=1025
+      - Email__EnableSsl=false
+      - Email__From=noreply@library.local
+      - Email__NotificationTo=admin@library.local
+    depends_on:
+      - sqlserver
+      - mailhog
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStr0ngP@ssword
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+volumes:
+  sqlserver-data:

@@ -1,0 +1,54 @@
+### Partner Integration - HTTP Samples
+
+### Get All Books
+GET https://localhost:5001/api/books
+Accept: application/json
+
+###
+
+### Get Available Books
+GET https://localhost:5001/api/books/available
+Accept: application/json
+
+###
+
+### Get All Categories
+GET https://localhost:5001/api/bookcategories
+Accept: application/json
+
+###
+
+### Create a Book
+POST https://localhost:5001/api/books
+Content-Type: application/json
+
+{
+  "title": "Domain-Driven Design",
+  "author": "Eric Evans",
+  "isbn": "978-0321125217",
+  "publishedYear": 2003,
+  "isAvailable": true,
+  "bookCategoryId": null
+}
+
+###
+
+### Update a Book
+PUT https://localhost:5001/api/books/{{bookId}}
+Content-Type: application/json
+
+{
+  "title": "Domain-Driven Design (Updated)",
+  "author": "Eric Evans",
+  "isbn": "978-0321125217",
+  "publishedYear": 2003,
+  "isAvailable": false,
+  "bookCategoryId": null
+}
+
+###
+
+### Delete a Book
+DELETE https://localhost:5001/api/books/{{bookId}}
+
+###

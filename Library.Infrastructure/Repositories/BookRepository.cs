@@ -5,57 +5,78 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Library.Infrastructure.Repositories;
 
-public class BookRepository : IBookRepository
+public class BookRepository : BaseRepository<Book>, IBookRepository
 {
-    private readonly LibraryDbContext _context;
-
-    public BookRepository(LibraryDbContext context)
-    {
-        _context = context;
-    }
-
-    public async Task<Book?> GetByIdAsync(Guid id)
-    {
-        return await _context.Books.FindAsync(id);
-    }
-
-    public async Task<IEnumerable<Book>> GetAllAsync()
-    {
-        return await _context.Books.ToListAsync();
-    }
+    public BookRepository(LibraryDbContext context) : base(context) { }
 
     public async Task<IEnumerable<Book>> GetAvailableBooksAsync()
     {
-        return await _context.Books
+        return await _dbSet
+            .Include(b => b.Author)
+            .Include(b => b.BookCategory)
             .Where(b => b.IsAvailable)
             .ToListAsync();
     }
 
     public async Task<Book?> GetByISBNAsync(string isbn)
     {
-        return await _context.Books
+        return await _dbSet
+            .Include(b => b.Author)
             .FirstOrDefaultAsync(b => b.ISBN == isbn);
     }
 
-    public async Task AddAsync(Book entity)
+    public async Task<IEnumerable<Book>> GetByAuthorIdAsync(Guid authorId)
     {
-        await _context.Books.AddAsync(entity);
-        await _context.SaveChangesAsync();
+        return await _dbSet
+            .Include(b => b.Author)
+            .Include(b => b.BookCategory)
+            .Where(b => b.AuthorId == authorId)
+            .ToListAsync();
     }
 
-    public async Task UpdateAsync(Book entity)
+    public async Task<IEnumerable<Book>> GetByCategoryIdAsync(Guid categoryId)
     {
-        _context.Books.Update(entity);
-        await _context.SaveChangesAsync();
+        return await _dbSet
+            .Include(b => b.Author)
+            .Where(b => b.BookCategoryId == categoryId)
+            .ToListAsync();
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task<IEnumerable<Book>> GetByBranchIdAsync(Guid branchId)
     {
-        var book = await _context.Books.FindAsync(id);
-        if (book is not null)
-        {
-            _context.Books.Remove(book);
-            await _context.SaveChangesAsync();
-        }
+        return await _dbSet
+            .Include(b => b.Author)
+            .Where(b => b.LibraryBranchId == branchId)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Book>> GetByPublisherIdAsync(Guid publisherId)
+    {
+        return await _dbSet
+            .Include(b => b.Author)
+            .Where(b => b.PublisherId == publisherId)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Book>> SearchAsync(string searchTerm)
+    {
+        return await _dbSet
+            .Include(b => b.Author)
+            .Include(b => b.BookCategory)
+            .Where(b => b.Title.Contains(searchTerm)
+                || b.ISBN.Contains(searchTerm)
+                || b.Author.FirstName.Contains(searchTerm)
+                || b.Author.LastName.Contains(searchTerm))
+            .ToListAsync();
+    }
+
+    public async Task<Book?> GetWithDetailsAsync(Guid id)
+    {
+        return await _dbSet
+            .Include(b => b.Author)
+            .Include(b => b.Publisher)
+            .Include(b => b.BookCategory)
+            .Include(b => b.LibraryBranch)
+            .FirstOrDefaultAsync(b => b.Id == id);
     }
 }

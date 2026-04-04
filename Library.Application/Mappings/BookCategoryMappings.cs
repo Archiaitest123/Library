@@ -21,7 +21,8 @@ public static class BookCategoryMappings
         {
             Id = Guid.NewGuid(),
             Name = dto.Name,
-            Description = dto.Description
+            Description = dto.Description,
+            CreatedAt = DateTime.UtcNow
         };
     }
 
@@ -29,5 +30,6 @@ public static class BookCategoryMappings
     {
         category.Name = dto.Name;
         category.Description = dto.Description;
+        category.UpdatedAt = DateTime.UtcNow;
     }
 }

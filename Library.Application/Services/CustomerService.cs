@@ -1,3 +1,4 @@
+using Library.Application.Common.Exceptions;
 using Library.Application.DTOs;
 using Library.Application.Interfaces;
 using Library.Application.Mappings;
@@ -34,6 +35,10 @@ public class CustomerService : ICustomerService
 
     public async Task<CustomerDto> CreateAsync(CreateCustomerDto createDto)
     {
+        var existing = await _customerRepository.GetByEmailAsync(createDto.Email);
+        if (existing is not null)
+            throw new ConflictException($"A customer with email '{createDto.Email}' already exists.");
+
         var customer = createDto.ToEntity();
         await _customerRepository.AddAsync(customer);
         return customer.ToDto();
@@ -42,7 +47,7 @@ public class CustomerService : ICustomerService
     public async Task UpdateAsync(Guid id, UpdateCustomerDto updateDto)
     {
         var customer = await _customerRepository.GetByIdAsync(id)
-            ?? throw new KeyNotFoundException($"Customer with id {id} not found.");
+            ?? throw new NotFoundException(nameof(Domain.Entities.Customer), id);
 
         updateDto.UpdateEntity(customer);
         await _customerRepository.UpdateAsync(customer);
@@ -50,6 +55,9 @@ public class CustomerService : ICustomerService
 
     public async Task DeleteAsync(Guid id)
     {
+        if (!await _customerRepository.ExistsAsync(id))
+            throw new NotFoundException(nameof(Domain.Entities.Customer), id);
+
         await _customerRepository.DeleteAsync(id);
     }
 }

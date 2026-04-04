@@ -1,3 +1,4 @@
+using Library.Application.Common.Exceptions;
 using Library.Application.DTOs;
 using Library.Application.Interfaces;
 using Library.Application.Mappings;
@@ -28,6 +29,10 @@ public class BookCategoryService : IBookCategoryService
 
     public async Task<BookCategoryDto> CreateAsync(CreateBookCategoryDto createDto)
     {
+        var existing = await _categoryRepository.GetByNameAsync(createDto.Name);
+        if (existing is not null)
+            throw new ConflictException($"Category with name '{createDto.Name}' already exists.");
+
         var category = createDto.ToEntity();
         await _categoryRepository.AddAsync(category);
         return category.ToDto();
@@ -36,7 +41,7 @@ public class BookCategoryService : IBookCategoryService
     public async Task UpdateAsync(Guid id, UpdateBookCategoryDto updateDto)
     {
         var category = await _categoryRepository.GetByIdAsync(id)
-            ?? throw new KeyNotFoundException($"BookCategory with id {id} not found.");
+            ?? throw new NotFoundException(nameof(Domain.Entities.BookCategory), id);
 
         updateDto.UpdateEntity(category);
         await _categoryRepository.UpdateAsync(category);
@@ -44,6 +49,9 @@ public class BookCategoryService : IBookCategoryService
 
     public async Task DeleteAsync(Guid id)
     {
+        if (!await _categoryRepository.ExistsAsync(id))
+            throw new NotFoundException(nameof(Domain.Entities.BookCategory), id);
+
         await _categoryRepository.DeleteAsync(id);
     }
 }

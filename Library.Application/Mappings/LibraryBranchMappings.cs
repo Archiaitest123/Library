@@ -19,7 +19,7 @@ public static class LibraryBranchMappings
             OpeningTime = branch.OpeningTime,
             ClosingTime = branch.ClosingTime,
             IsActive = branch.IsActive,
-            StaffCount = branch.Staff?.Count ?? 0,
+            UserCount = branch.Users?.Count ?? 0,
             BookCount = branch.Books?.Count ?? 0
         };
     }

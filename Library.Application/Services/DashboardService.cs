@@ -9,7 +9,7 @@ public class DashboardService : IDashboardService
 {
     private readonly IBookRepository _bookRepository;
     private readonly ICustomerRepository _customerRepository;
-    private readonly IStaffRepository _staffRepository;
+    private readonly IUserRepository _userRepository;
     private readonly IBookLoanRepository _loanRepository;
     private readonly IBookReservationRepository _reservationRepository;
     private readonly IFineRepository _fineRepository;
@@ -18,7 +18,7 @@ public class DashboardService : IDashboardService
     public DashboardService(
         IBookRepository bookRepository,
         ICustomerRepository customerRepository,
-        IStaffRepository staffRepository,
+        IUserRepository userRepository,
         IBookLoanRepository loanRepository,
         IBookReservationRepository reservationRepository,
         IFineRepository fineRepository,
@@ -26,7 +26,7 @@ public class DashboardService : IDashboardService
     {
         _bookRepository = bookRepository;
         _customerRepository = customerRepository;
-        _staffRepository = staffRepository;
+        _userRepository = userRepository;
         _loanRepository = loanRepository;
         _reservationRepository = reservationRepository;
         _fineRepository = fineRepository;
@@ -39,7 +39,7 @@ public class DashboardService : IDashboardService
         var availableBooks = await _bookRepository.CountAsync(b => b.IsAvailable);
         var totalCustomers = await _customerRepository.CountAsync();
         var activeCustomers = (await _customerRepository.GetActiveCustomersAsync()).Count();
-        var totalStaff = await _staffRepository.CountAsync();
+        var totalUsers = await _userRepository.CountAsync();
         var activeLoans = (await _loanRepository.GetActiveLoansAsync()).Count();
         var overdueLoans = (await _loanRepository.GetOverdueLoansAsync()).Count();
         var pendingReservations = (await _reservationRepository.GetByStatusAsync(ReservationStatus.Pending)).Count();
@@ -53,7 +53,7 @@ public class DashboardService : IDashboardService
             AvailableBooks = availableBooks,
             TotalCustomers = totalCustomers,
             ActiveCustomers = activeCustomers,
-            TotalStaff = totalStaff,
+            TotalUsers = totalUsers,
             ActiveLoans = activeLoans,
             OverdueLoans = overdueLoans,
             PendingReservations = pendingReservations,

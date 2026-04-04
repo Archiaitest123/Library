@@ -29,7 +29,6 @@ public static class DependencyInjection
         // Repositories
         services.AddScoped<IBookRepository, BookRepository>();
         services.AddScoped<IBookCategoryRepository, BookCategoryRepository>();
-        services.AddScoped<IStaffRepository, StaffRepository>();
         services.AddScoped<ICustomerRepository, CustomerRepository>();
         services.AddScoped<IAuthorRepository, AuthorRepository>();
         services.AddScoped<IPublisherRepository, PublisherRepository>();
@@ -40,6 +39,7 @@ public static class DependencyInjection
         services.AddScoped<IBookReviewRepository, BookReviewRepository>();
         services.AddScoped<INotificationRepository, NotificationRepository>();
         services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
 
         return services;
     }

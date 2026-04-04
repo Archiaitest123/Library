@@ -53,13 +53,9 @@ public enum BookCondition
     Lost
 }
 
-public enum StaffRole
+public enum UserRole
 {
+    Member,
     Librarian,
-    SeniorLibrarian,
-    AssistantManager,
-    Manager,
-    Director,
-    ITSupport,
-    Volunteer
+    Admin
 }

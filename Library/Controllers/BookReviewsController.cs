@@ -1,5 +1,6 @@
 using Library.Application.DTOs;
 using Library.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Controllers;
@@ -7,6 +8,7 @@ namespace Library.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
+[Authorize(Policy = "MemberOrAbove")]
 public class BookReviewsController : ControllerBase
 {
     private readonly IBookReviewService _reviewService;
@@ -17,6 +19,7 @@ public class BookReviewsController : ControllerBase
     }
 
     [HttpGet("book/{bookId:guid}")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(IEnumerable<BookReviewDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<BookReviewDto>>> GetByBook(Guid bookId)
     {
@@ -25,6 +28,7 @@ public class BookReviewsController : ControllerBase
     }
 
     [HttpGet("customer/{customerId:guid}")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(IEnumerable<BookReviewDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<BookReviewDto>>> GetByCustomer(Guid customerId)
     {
@@ -33,6 +37,7 @@ public class BookReviewsController : ControllerBase
     }
 
     [HttpGet("book/{bookId:guid}/average-rating")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(double), StatusCodes.Status200OK)]
     public async Task<ActionResult<double>> GetAverageRating(Guid bookId)
     {
@@ -41,6 +46,7 @@ public class BookReviewsController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(BookReviewDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<BookReviewDto>> GetById(Guid id)
@@ -71,6 +77,7 @@ public class BookReviewsController : ControllerBase
     }
 
     [HttpPost("{id:guid}/approve")]
+    [Authorize(Policy = "LibrarianOrAdmin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Approve(Guid id)

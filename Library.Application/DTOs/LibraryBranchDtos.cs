@@ -12,7 +12,7 @@ public class LibraryBranchDto
     public TimeOnly OpeningTime { get; set; }
     public TimeOnly ClosingTime { get; set; }
     public bool IsActive { get; set; }
-    public int StaffCount { get; set; }
+    public int UserCount { get; set; }
     public int BookCount { get; set; }
 }
 

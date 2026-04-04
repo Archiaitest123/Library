@@ -60,7 +60,7 @@ public class BookLoanRepository : BaseRepository<BookLoan>, IBookLoanRepository
         return await _dbSet
             .Include(l => l.Book)
             .Include(l => l.Customer)
-            .Include(l => l.ProcessedByStaff)
+            .Include(l => l.ProcessedByUser)
             .Include(l => l.Fines)
             .FirstOrDefaultAsync(l => l.Id == id);
     }

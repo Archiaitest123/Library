@@ -14,7 +14,6 @@ public class LibraryDbContext : DbContext
     public DbSet<BookCategory> BookCategories => Set<BookCategory>();
     public DbSet<Author> Authors => Set<Author>();
     public DbSet<Publisher> Publishers => Set<Publisher>();
-    public DbSet<Staff> Staff => Set<Staff>();
     public DbSet<Customer> Customers => Set<Customer>();
     public DbSet<BookLoan> BookLoans => Set<BookLoan>();
     public DbSet<BookReservation> BookReservations => Set<BookReservation>();
@@ -23,6 +22,7 @@ public class LibraryDbContext : DbContext
     public DbSet<BookReview> BookReviews => Set<BookReview>();
     public DbSet<Notification> Notifications => Set<Notification>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+    public DbSet<User> Users => Set<User>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -33,7 +33,6 @@ public class LibraryDbContext : DbContext
         modelBuilder.Entity<BookCategory>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<Author>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<Publisher>().HasQueryFilter(e => !e.IsDeleted);
-        modelBuilder.Entity<Staff>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<Customer>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<BookLoan>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<BookReservation>().HasQueryFilter(e => !e.IsDeleted);
@@ -41,6 +40,7 @@ public class LibraryDbContext : DbContext
         modelBuilder.Entity<LibraryBranch>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<BookReview>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<Notification>().HasQueryFilter(e => !e.IsDeleted);
+        modelBuilder.Entity<User>().HasQueryFilter(e => !e.IsDeleted);
 
         // Author
         modelBuilder.Entity<Author>(entity =>
@@ -116,26 +116,6 @@ public class LibraryDbContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
-        // Staff
-        modelBuilder.Entity<Staff>(entity =>
-        {
-            entity.HasKey(s => s.Id);
-            entity.Property(s => s.FirstName).IsRequired().HasMaxLength(100);
-            entity.Property(s => s.LastName).IsRequired().HasMaxLength(100);
-            entity.Property(s => s.Email).IsRequired().HasMaxLength(200);
-            entity.Property(s => s.Phone).HasMaxLength(20);
-            entity.Property(s => s.Position).IsRequired().HasMaxLength(100);
-            entity.Property(s => s.EmployeeNumber).HasMaxLength(20);
-            entity.Property(s => s.Salary).HasPrecision(10, 2);
-            entity.HasIndex(s => s.Email).IsUnique();
-            entity.HasIndex(s => s.EmployeeNumber).IsUnique().HasFilter("[EmployeeNumber] IS NOT NULL");
-
-            entity.HasOne(s => s.LibraryBranch)
-                .WithMany(lb => lb.Staff)
-                .HasForeignKey(s => s.LibraryBranchId)
-                .OnDelete(DeleteBehavior.SetNull);
-        });
-
         // Customer
         modelBuilder.Entity<Customer>(entity =>
         {
@@ -171,9 +151,9 @@ public class LibraryDbContext : DbContext
                 .HasForeignKey(l => l.CustomerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            entity.HasOne(l => l.ProcessedByStaff)
-                .WithMany(s => s.ProcessedLoans)
-                .HasForeignKey(l => l.ProcessedByStaffId)
+            entity.HasOne(l => l.ProcessedByUser)
+                .WithMany(u => u.ProcessedLoans)
+                .HasForeignKey(l => l.ProcessedByUserId)
                 .OnDelete(DeleteBehavior.SetNull);
         });
 
@@ -261,6 +241,30 @@ public class LibraryDbContext : DbContext
                 .WithMany(c => c.Notifications)
                 .HasForeignKey(n => n.CustomerId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // User
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasKey(u => u.Id);
+            entity.Property(u => u.Username).IsRequired().HasMaxLength(100);
+            entity.Property(u => u.Email).IsRequired().HasMaxLength(200);
+            entity.Property(u => u.PasswordHash).IsRequired().HasMaxLength(500);
+            entity.Property(u => u.FirstName).IsRequired().HasMaxLength(100);
+            entity.Property(u => u.LastName).IsRequired().HasMaxLength(100);
+            entity.Property(u => u.Phone).HasMaxLength(20);
+            entity.Property(u => u.Position).HasMaxLength(100);
+            entity.Property(u => u.EmployeeNumber).HasMaxLength(20);
+            entity.Property(u => u.Salary).HasPrecision(10, 2);
+            entity.Property(u => u.RefreshToken).HasMaxLength(500);
+            entity.HasIndex(u => u.Username).IsUnique();
+            entity.HasIndex(u => u.Email).IsUnique();
+            entity.HasIndex(u => u.EmployeeNumber).IsUnique().HasFilter("[EmployeeNumber] IS NOT NULL");
+
+            entity.HasOne(u => u.LibraryBranch)
+                .WithMany(lb => lb.Users)
+                .HasForeignKey(u => u.LibraryBranchId)
+                .OnDelete(DeleteBehavior.SetNull);
         });
 
         // AuditLog

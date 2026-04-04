@@ -1,5 +1,6 @@
 using Library.Application.DTOs;
 using Library.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Controllers;
@@ -7,6 +8,7 @@ namespace Library.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
+[Authorize(Policy = "LibrarianOrAdmin")]
 public class PublishersController : ControllerBase
 {
     private readonly IPublisherService _publisherService;
@@ -17,6 +19,7 @@ public class PublishersController : ControllerBase
     }
 
     [HttpGet]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(IEnumerable<PublisherDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<PublisherDto>>> GetAll()
     {
@@ -25,6 +28,7 @@ public class PublishersController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(PublisherDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<PublisherDto>> GetById(Guid id)
@@ -37,6 +41,7 @@ public class PublishersController : ControllerBase
     }
 
     [HttpGet("active")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(IEnumerable<PublisherDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<PublisherDto>>> GetActive()
     {

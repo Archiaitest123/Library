@@ -10,7 +10,7 @@ public static class DependencyInjection
     {
         services.AddScoped<IBookService, BookService>();
         services.AddScoped<IBookCategoryService, BookCategoryService>();
-        services.AddScoped<IStaffService, StaffService>();
+        services.AddScoped<IUserService, UserService>();
         services.AddScoped<ICustomerService, CustomerService>();
         services.AddScoped<IAuthorService, AuthorService>();
         services.AddScoped<IPublisherService, PublisherService>();
@@ -21,6 +21,7 @@ public static class DependencyInjection
         services.AddScoped<IBookReviewService, BookReviewService>();
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<IDashboardService, DashboardService>();
+        services.AddScoped<IAuthService, AuthService>();
 
         return services;
     }

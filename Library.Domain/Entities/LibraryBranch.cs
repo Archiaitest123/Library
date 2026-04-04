@@ -16,5 +16,5 @@ public class LibraryBranch : BaseEntity
     public double? Longitude { get; set; }
 
     public ICollection<Book> Books { get; set; } = [];
-    public ICollection<Staff> Staff { get; set; } = [];
+    public ICollection<User> Users { get; set; } = [];
 }

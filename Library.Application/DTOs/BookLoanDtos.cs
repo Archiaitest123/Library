@@ -10,8 +10,8 @@ public class BookLoanDto
     public string BookISBN { get; set; } = string.Empty;
     public Guid CustomerId { get; set; }
     public string CustomerName { get; set; } = string.Empty;
-    public Guid? ProcessedByStaffId { get; set; }
-    public string? ProcessedByStaffName { get; set; }
+    public Guid? ProcessedByUserId { get; set; }
+    public string? ProcessedByUserName { get; set; }
     public DateTime LoanDate { get; set; }
     public DateTime DueDate { get; set; }
     public DateTime? ReturnDate { get; set; }
@@ -26,7 +26,7 @@ public class CreateBookLoanDto
 {
     public Guid BookId { get; set; }
     public Guid CustomerId { get; set; }
-    public Guid? ProcessedByStaffId { get; set; }
+    public Guid? ProcessedByUserId { get; set; }
     public int LoanDurationDays { get; set; } = 14;
     public string? Notes { get; set; }
 }

@@ -1,0 +1,29 @@
+groups:
+  - name: library-api-alerts
+    rules:
+      - alert: HighErrorRate
+        expr: sum(rate(http_requests_total{app="library-api",status=~"5.."}[5m])) / sum(rate(http_requests_total{app="library-api"}[5m])) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High error rate on Library API"
+          description: "Error rate is above 5% for the last 5 minutes."
+
+      - alert: HighResponseTime
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{app="library-api"}[5m])) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High response time on Library API"
+          description: "95th percentile response time is above 2 seconds."
+
+      - alert: ServiceDown
+        expr: up{job="library-api"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Library API is down"
+          description: "The Library API target has been unreachable for 1 minute."

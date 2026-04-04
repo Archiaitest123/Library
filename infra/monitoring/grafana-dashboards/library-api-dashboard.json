@@ -1,0 +1,47 @@
+{
+  "dashboard": {
+    "title": "Library API Dashboard",
+    "panels": [
+      {
+        "title": "HTTP Request Rate",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{app=\"library-api\"}[5m])",
+            "legendFormat": "{{method}} {{path}}"
+          }
+        ]
+      },
+      {
+        "title": "HTTP Response Time (p95)",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{app=\"library-api\"}[5m]))",
+            "legendFormat": "p95"
+          }
+        ]
+      },
+      {
+        "title": "Error Rate",
+        "type": "singlestat",
+        "targets": [
+          {
+            "expr": "sum(rate(http_requests_total{app=\"library-api\",status=~\"5..\"}[5m])) / sum(rate(http_requests_total{app=\"library-api\"}[5m])) * 100",
+            "legendFormat": "Error %"
+          }
+        ]
+      },
+      {
+        "title": "Active Database Connections",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "sqlserver_active_connections{database=\"LibraryDb\"}",
+            "legendFormat": "Active Connections"
+          }
+        ]
+      }
+    ]
+  }
+}

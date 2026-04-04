@@ -1,0 +1,39 @@
+trigger:
+  branches:
+    include:
+      - master
+      - feature/*
+      - bugfix/*
+
+pr:
+  branches:
+    include:
+      - master
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  buildConfiguration: "Release"
+  dotnetVersion: "8.0.x"
+
+stages:
+  - stage: Build
+    displayName: "Build & Test"
+    jobs:
+      - job: BuildJob
+        displayName: "Build"
+        steps:
+          - template: templates/dotnet-build.yml
+            parameters:
+              dotnetVersion: $(dotnetVersion)
+              buildConfiguration: $(buildConfiguration)
+
+      - job: TestJob
+        displayName: "Test"
+        dependsOn: BuildJob
+        steps:
+          - template: templates/dotnet-test.yml
+            parameters:
+              dotnetVersion: $(dotnetVersion)
+              buildConfiguration: $(buildConfiguration)

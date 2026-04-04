@@ -20,6 +20,7 @@ public class RequestLoggingMiddleware
 
         context.Items["CorrelationId"] = correlationId;
         context.Response.Headers["X-Correlation-ID"] = correlationId;
+        context.Response.Headers["X-Api-Version"] = "1.0";
 
         var stopwatch = Stopwatch.StartNew();
 

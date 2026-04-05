@@ -46,4 +46,22 @@ public static class BookLoanMappings
             CreatedAt = DateTime.UtcNow
         };
     }
+
+    public static BookLoan ToEntity(this CreateBookLoanDto dto, int loanDurationDays, int maxRenewals)
+    {
+        return new BookLoan
+        {
+            Id = Guid.NewGuid(),
+            BookId = dto.BookId,
+            CustomerId = dto.CustomerId,
+            ProcessedByUserId = dto.ProcessedByUserId,
+            LoanDate = DateTime.UtcNow,
+            DueDate = DateTime.UtcNow.AddDays(loanDurationDays),
+            Status = LoanStatus.Active,
+            Notes = dto.Notes,
+            RenewalCount = 0,
+            MaxRenewals = maxRenewals,
+            CreatedAt = DateTime.UtcNow
+        };
+    }
 }

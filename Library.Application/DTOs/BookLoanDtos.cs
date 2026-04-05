@@ -40,3 +40,27 @@ public class RenewBookLoanDto
 {
     public int AdditionalDays { get; set; } = 14;
 }
+
+public class LoanEligibilityResultDto
+{
+    public bool IsEligible { get; set; }
+    public List<string> Reasons { get; set; } = [];
+    public int CurrentActiveLoans { get; set; }
+    public int MaxBooksAllowed { get; set; }
+    public int RemainingSlots { get; set; }
+    public int RecommendedLoanDurationDays { get; set; }
+    public decimal OutstandingFines { get; set; }
+    public decimal MaxOutstandingFinesAllowed { get; set; }
+}
+
+public class LateFeeCalculationDto
+{
+    public Guid LoanId { get; set; }
+    public DateTime DueDate { get; set; }
+    public DateTime ReturnDate { get; set; }
+    public int DaysLate { get; set; }
+    public decimal DailyRate { get; set; }
+    public decimal CalculatedFee { get; set; }
+    public bool WasCapped { get; set; }
+    public decimal MaxFee { get; set; }
+}

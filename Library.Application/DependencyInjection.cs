@@ -14,6 +14,7 @@ public static class DependencyInjection
         services.AddScoped<ICustomerService, CustomerService>();
         services.AddScoped<IAuthorService, AuthorService>();
         services.AddScoped<IPublisherService, PublisherService>();
+        services.AddScoped<ILoanPolicyService, LoanPolicyService>();
         services.AddScoped<IBookLoanService, BookLoanService>();
         services.AddScoped<IBookReservationService, BookReservationService>();
         services.AddScoped<IFineService, FineService>();

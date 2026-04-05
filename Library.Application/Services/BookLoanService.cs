@@ -14,19 +14,22 @@ public class BookLoanService : IBookLoanService
     private readonly ICustomerRepository _customerRepository;
     private readonly IFineRepository _fineRepository;
     private readonly ILoanPolicyService _loanPolicyService;
+    private readonly IReservationQueueService _reservationQueueService;
 
     public BookLoanService(
         IBookLoanRepository loanRepository,
         IBookRepository bookRepository,
         ICustomerRepository customerRepository,
         IFineRepository fineRepository,
-        ILoanPolicyService loanPolicyService)
+        ILoanPolicyService loanPolicyService,
+        IReservationQueueService reservationQueueService)
     {
         _loanRepository = loanRepository;
         _bookRepository = bookRepository;
         _customerRepository = customerRepository;
         _fineRepository = fineRepository;
         _loanPolicyService = loanPolicyService;
+        _reservationQueueService = reservationQueueService;
     }
 
     public async Task<BookLoanDto?> GetByIdAsync(Guid id)
@@ -170,6 +173,9 @@ public class BookLoanService : IBookLoanService
             book.AvailableCopies++;
             book.IsAvailable = true;
             await _bookRepository.UpdateAsync(book);
+
+            // Promote next reservation in queue now that a copy is available
+            await _reservationQueueService.PromoteNextInQueueAsync(loan.BookId);
         }
 
         return loan.ToDto();

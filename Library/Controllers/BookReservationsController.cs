@@ -12,10 +12,14 @@ namespace Library.Controllers;
 public class BookReservationsController : ControllerBase
 {
     private readonly IBookReservationService _reservationService;
+    private readonly IReservationQueueService _queueService;
 
-    public BookReservationsController(IBookReservationService reservationService)
+    public BookReservationsController(
+        IBookReservationService reservationService,
+        IReservationQueueService queueService)
     {
         _reservationService = reservationService;
+        _queueService = queueService;
     }
 
     [HttpGet]
@@ -80,6 +84,66 @@ public class BookReservationsController : ControllerBase
     {
         await _reservationService.FulfillReservationAsync(id);
         return NoContent();
+    }
+
+    [HttpPost("prioritized")]
+    [ProducesResponseType(typeof(BookReservationDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<BookReservationDto>> CreatePrioritized([FromBody] CreateBookReservationDto createDto)
+    {
+        var reservation = await _queueService.CreatePrioritizedReservationAsync(createDto);
+        return CreatedAtAction(nameof(GetById), new { id = reservation.Id }, reservation);
+    }
+
+    [HttpGet("queue/{bookId:guid}")]
+    [ProducesResponseType(typeof(IEnumerable<BookReservationDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<IEnumerable<BookReservationDto>>> GetQueue(Guid bookId)
+    {
+        var queue = await _queueService.GetQueueByBookAsync(bookId);
+        return Ok(queue);
+    }
+
+    [HttpGet("queue/{bookId:guid}/status")]
+    [ProducesResponseType(typeof(ReservationQueueStatusDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ReservationQueueStatusDto>> GetQueueStatus(Guid bookId)
+    {
+        var status = await _queueService.GetQueueStatusAsync(bookId);
+        return Ok(status);
+    }
+
+    [HttpPost("{id:guid}/cancel-requeue")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> CancelAndRequeue(Guid id)
+    {
+        await _queueService.CancelAndRequeueAsync(id);
+        return NoContent();
+    }
+
+    [HttpPost("process-expired")]
+    [Authorize(Policy = "AdminOnly")]
+    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+    public async Task<ActionResult<int>> ProcessExpired()
+    {
+        var count = await _queueService.ProcessExpiredReservationsAsync();
+        return Ok(count);
+    }
+
+    [HttpPost("queue/{bookId:guid}/promote")]
+    [ProducesResponseType(typeof(BookReservationDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<BookReservationDto?>> PromoteNext(Guid bookId)
+    {
+        var promoted = await _queueService.PromoteNextInQueueAsync(bookId);
+        if (promoted is null)
+            return Ok(null);
+
+        return Ok(promoted);
     }
 
     [HttpDelete("{id:guid}")]

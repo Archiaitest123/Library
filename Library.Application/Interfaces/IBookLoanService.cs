@@ -15,4 +15,6 @@ public interface IBookLoanService
     Task<BookLoanDto> ReturnBookAsync(Guid id, ReturnBookLoanDto returnDto);
     Task<BookLoanDto> RenewLoanAsync(Guid id, RenewBookLoanDto renewDto);
     Task DeleteAsync(Guid id);
+    Task<LoanEligibilityResultDto> CheckEligibilityAsync(Guid customerId);
+    Task<LateFeeCalculationDto> CalculateLateFeeAsync(Guid loanId);
 }

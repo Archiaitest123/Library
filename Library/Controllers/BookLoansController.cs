@@ -101,6 +101,24 @@ public class BookLoansController : ControllerBase
         return Ok(loan);
     }
 
+    [HttpGet("eligibility/{customerId:guid}")]
+    [ProducesResponseType(typeof(LoanEligibilityResultDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<LoanEligibilityResultDto>> CheckEligibility(Guid customerId)
+    {
+        var result = await _loanService.CheckEligibilityAsync(customerId);
+        return Ok(result);
+    }
+
+    [HttpGet("{id:guid}/late-fee")]
+    [ProducesResponseType(typeof(LateFeeCalculationDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<LateFeeCalculationDto>> CalculateLateFee(Guid id)
+    {
+        var result = await _loanService.CalculateLateFeeAsync(id);
+        return Ok(result);
+    }
+
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
